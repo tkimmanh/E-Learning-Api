@@ -6,6 +6,7 @@ import cors from "cors";
 
 // ** config
 import connect from "./config/connect";
+import routerAuth from "./routes/auth.routes";
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // **  route
+app.use("/auth", routerAuth);
 
 const hostname = "localhost";
 const port = 8017;
