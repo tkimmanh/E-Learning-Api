@@ -1,6 +1,7 @@
 // controller
 import {
   loginController,
+  logoutController,
   registerController,
 } from "~/controllers/auth.controllers";
 
@@ -12,5 +13,6 @@ const routerAuth = Router();
 
 routerAuth.post("/register", registerController);
 routerAuth.post("/login", loginController);
+routerAuth.get("/logout", logoutController);
 
 export default routerAuth;

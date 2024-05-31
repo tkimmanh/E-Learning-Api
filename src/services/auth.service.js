@@ -32,7 +32,7 @@ export const loginService = async ({ email, password }) => {
   if (!isMatch) throw new Error("Mật khẩu không chính xác!");
   // token
   jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "7d",
+    expiresIn: "1h",
   });
   user.password = undefined;
   return { user };

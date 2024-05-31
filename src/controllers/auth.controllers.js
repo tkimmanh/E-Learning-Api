@@ -27,3 +27,12 @@ export const loginController = async (req, res) => {
     return res.status(500).send({ msg: error.message });
   }
 };
+
+export const logoutController = (req, res) => {
+  try {
+    res.clearCookie("token");
+    return res.status(200).send({ msg: "Đăng xuất thành công!" });
+  } catch (error) {
+    return res.status(500).send({ msg: error.message });
+  }
+};
