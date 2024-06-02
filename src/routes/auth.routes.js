@@ -3,7 +3,9 @@ import {
   loginController,
   logoutController,
   registerController,
+  currentUserController,
 } from "~/controllers/auth.controllers";
+import { requireSignin } from "~/middlewares/require-signin";
 
 // ** express
 import { Router } from "express";
@@ -14,5 +16,6 @@ const routerAuth = Router();
 routerAuth.post("/register", registerController);
 routerAuth.post("/login", loginController);
 routerAuth.get("/logout", logoutController);
+routerAuth.get("/current-user", requireSignin, currentUserController);
 
 export default routerAuth;

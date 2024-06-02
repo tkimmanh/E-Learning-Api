@@ -31,9 +31,14 @@ export const loginService = async ({ email, password }) => {
   const isMatch = await comparePassword(password, user.password);
   if (!isMatch) throw new Error("Mật khẩu không chính xác!");
   // token
-  jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
+  const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: "7d",
   });
-  user.password = undefined;
+  return { user, token };
+};
+
+export const currentUserService = async (userId) => {
+  const user = await User.findById(userId).select("-password").exec();
+  if (!user) throw new Error("Người dùng không tồn tại!");
   return { user };
 };
