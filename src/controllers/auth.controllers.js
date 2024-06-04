@@ -3,6 +3,7 @@ import {
   currentUserService,
   loginService,
   registerService,
+  sendEmailService,
 } from "~/services/auth.service";
 
 export const registerController = async (req, res) => {
@@ -39,11 +40,39 @@ export const logoutController = (req, res) => {
     return res.status(500).send({ msg: error.message });
   }
 };
+
 export const currentUserController = async (req, res) => {
-  console.log(req.user);
   try {
     const result = await currentUserService(req.user._id);
     return res.status(200).send(result);
+  } catch (error) {
+    return res.status(500).send({ msg: error.message });
+  }
+};
+
+export const sendEmailController = async (req, res) => {
+  try {
+    const params = {
+      Source: process.env.EMAIL_FROM, // email gửi
+      Destination: {
+        ToAddresses: ["tkmanh110329@gmail.com"], // email nhận
+      },
+      ReplyToAddresses: [process.env.EMAIL_FROM], // email trả lời
+      Message: {
+        Subject: {
+          Data: "Test Email Subject",
+          Charset: "UTF-8",
+        },
+        Body: {
+          Html: {
+            Charset: "UTF-8",
+            Data: "<p>This is the <b>HTML</b> message body.</p>",
+          },
+        },
+      },
+    };
+    const emailSend = await sendEmailService(params);
+    return res.status(200).json({ msg: "Email sent successfully", emailSend });
   } catch (error) {
     return res.status(500).send({ msg: error.message });
   }

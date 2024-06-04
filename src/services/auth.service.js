@@ -1,6 +1,29 @@
+// ** models
 import { User } from "~/models/users.model";
+
+// ** utils
 import { comparePassword, hashPassword } from "~/utils/auth";
+// ** aws
+import AWS from "aws-sdk";
+
+// ** jwt
 import jwt from "jsonwebtoken";
+
+// ** config
+const SES = new AWS.SES({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+});
+
+// ** s3 config
+const s3Config = {
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+};
+
+const s3 = new AWS.S3(s3Config);
 
 export const registerService = async ({ name, email, password }) => {
   // validation
@@ -41,4 +64,8 @@ export const currentUserService = async (userId) => {
   const user = await User.findById(userId).select("-password").exec();
   if (!user) throw new Error("Người dùng không tồn tại!");
   return { user };
+};
+
+export const sendEmailService = async (params) => {
+  return SES.sendEmail(params).promise();
 };
