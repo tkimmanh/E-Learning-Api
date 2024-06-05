@@ -4,7 +4,8 @@ import {
   logoutController,
   registerController,
   currentUserController,
-  sendEmailController,
+  forgotPasswordController,
+  resetPasswordController,
 } from "~/controllers/auth.controllers";
 import { requireSignin } from "~/middlewares/require-signin";
 
@@ -17,7 +18,8 @@ const routerAuth = Router();
 routerAuth.post("/register", registerController);
 routerAuth.post("/login", loginController);
 routerAuth.get("/logout", logoutController);
-routerAuth.get("/send-email", sendEmailController);
+routerAuth.post("/forgot-password", forgotPasswordController);
+routerAuth.post("/reset-password", resetPasswordController);
 routerAuth.get("/current-user", requireSignin, currentUserController);
 
 export default routerAuth;

@@ -66,6 +66,37 @@ export const currentUserService = async (userId) => {
   return { user };
 };
 
-export const sendEmailService = async (params) => {
+export const forgotPasswordService = async (email, params, short_code) => {
+  const user = await User.findOneAndUpdate(
+    { email },
+    { password_reset_code: short_code }
+  );
+
+  // Xóa mã xác nhận sau 3 phút
+  setTimeout(async () => {
+    await User.findOneAndUpdate(
+      { email, password_reset_code: short_code },
+      { password_reset_code: "" }
+    );
+  }, 3 * 60 * 1000); // 3 phút
+
+  if (!user) {
+    throw new Error("Người dùng không tồn tại!");
+  }
   return SES.sendEmail(params).promise();
+};
+
+export const resetPasswordService = async (new_password, shortCode) => {
+  const hashedPassword = await hashPassword(new_password);
+
+  const user = await User.findOneAndUpdate(
+    { password_reset_code: shortCode },
+    { password: hashedPassword }
+  );
+  if (!user) {
+    throw new Error("Mã xác nhận không chính xác!");
+  }
+  return {
+    msg: "Mật khẩu đã được đặt lại!",
+  };
 };

@@ -1,10 +1,14 @@
 // ** service
 import {
   currentUserService,
+  forgotPasswordService,
   loginService,
   registerService,
-  sendEmailService,
+  resetPasswordService,
 } from "~/services/auth.service";
+
+import { v4 as uuidv4 } from "uuid";
+import { comparePassword, hashPassword } from "~/utils/auth";
 
 export const registerController = async (req, res) => {
   try {
@@ -50,29 +54,49 @@ export const currentUserController = async (req, res) => {
   }
 };
 
-export const sendEmailController = async (req, res) => {
+export const forgotPasswordController = async (req, res) => {
+  const { email } = req.body;
+
   try {
+    const short_code = uuidv4().slice(0, 6).toUpperCase();
+
     const params = {
       Source: process.env.EMAIL_FROM, // email gửi
       Destination: {
-        ToAddresses: ["tkmanh110329@gmail.com"], // email nhận
+        ToAddresses: [email], // email nhận
       },
       ReplyToAddresses: [process.env.EMAIL_FROM], // email trả lời
       Message: {
         Subject: {
-          Data: "Test Email Subject",
+          Data: "E-Learning - Đặt lại mật khẩu",
           Charset: "UTF-8",
         },
         Body: {
           Html: {
             Charset: "UTF-8",
-            Data: "<p>This is the <b>HTML</b> message body.</p>",
+            Data: `
+            <h1>Đặt lại mật khẩu</h1>
+            <p>Mã xác nhận đặt lại mật khẩu của bạn là : <strong>${short_code}</strong> </p>
+            <p>Mã xác nhận sẽ hết hạn sau 3 phút</p>
+            `,
           },
         },
       },
     };
-    const emailSend = await sendEmailService(params);
+    const emailSend = await forgotPasswordService(email, params, short_code);
+
     return res.status(200).json({ msg: "Email sent successfully", emailSend });
+  } catch (error) {
+    return res.status(500).send({ msg: error.message });
+  }
+};
+
+export const resetPasswordController = async (req, res) => {
+  try {
+    const { new_password, short_code } = req.body;
+
+    const result = await resetPasswordService(new_password, short_code);
+    return res.status(200).send(result);
   } catch (error) {
     return res.status(500).send({ msg: error.message });
   }

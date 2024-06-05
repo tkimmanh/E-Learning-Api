@@ -31,6 +31,10 @@ const userSchema = mongoose.Schema(
     stripe_account_id: { type: String, default: "" }, //  lưu id stripe của seller
     stripe_seller: {}, //  lưu thông tin stripe của seller
     stripeSession: {}, //  lưu thông tin session stripe
+    password_reset_code: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );
