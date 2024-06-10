@@ -7,8 +7,7 @@ export const makeInstructorController = async (req, res) => {
     return res.send(result.accountLink.url);
   } catch (error) {
     return res.status(500).json({
-      message: "Internal server error",
-      error,
+      message: error,
     });
   }
 };

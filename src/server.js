@@ -13,6 +13,7 @@ import cookieParser from "cookie-parser";
 // ** router
 import routerAuth from "./routes/auth.routes";
 import routerInstructor from "./routes/instrucor.routes";
+import routerCourse from "./routes/course.routes";
 
 // ** csrf
 import csrf from "@dr.pogodin/csurf";
@@ -44,7 +45,7 @@ app.get("/csrf-token", (req, res) => {
 
 app.use("/auth", routerAuth);
 app.use("/instructor", routerInstructor);
-
+app.use("/course", routerCourse);
 const hostname = "localhost";
 const port = 8017;
 

@@ -12,6 +12,11 @@ const client = new paypal.core.PayPalHttpClient(environment);
 export const makeInstructorService = async (user_id, paypal_email) => {
   const user = await User.findById({ _id: user_id }).exec();
 
+  if (user.email_paypal === paypal_email) {
+    throw new Error("Email PayPal đã được đăng ký");
+  }
+  // Kiểm tra email PayPal
+
   // Cập nhật email PayPal của người dng
   if (!user.email_paypal) {
     user.email_paypal = paypal_email;

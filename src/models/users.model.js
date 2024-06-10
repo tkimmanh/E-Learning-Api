@@ -28,9 +28,10 @@ const userSchema = mongoose.Schema(
       default: ["Subscriber"],
       enum: ["Subscriber", "Instructor", "Admin"],
     },
-    stripe_account_id: {}, //  lưu id stripe của seller
-    stripe_seller: {}, //  lưu thông tin stripe của seller
-    stripe_session: {}, //  lưu thông tin session stripe
+    email_paypal: {
+      type: String,
+      default: "",
+    },
     password_reset_code: {
       type: String,
       default: "",
