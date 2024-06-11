@@ -46,6 +46,7 @@ app.get("/csrf-token", (req, res) => {
 app.use("/auth", routerAuth);
 app.use("/instructor", routerInstructor);
 app.use("/course", routerCourse);
+
 const hostname = "localhost";
 const port = 8017;
 

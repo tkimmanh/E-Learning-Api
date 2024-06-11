@@ -3,9 +3,12 @@ import multer from "multer";
 
 // ** controller
 import {
+  createChapterController,
   createCourseController,
   deleteImageCourseController,
+  deleteVideoController,
   uploadImageCourseController,
+  uploadVideoController,
 } from "~/controllers/course.controllers";
 
 // ** middleware
@@ -32,5 +35,12 @@ routerCourse.delete(
 );
 
 routerCourse.post("/create-course", requireSignin, createCourseController);
+routerCourse.post("/create-chapter", createChapterController);
+routerCourse.post(
+  "/upload-video",
+  upload.single("video"),
+  uploadVideoController
+);
+routerCourse.delete("/delete-video", requireSignin, deleteVideoController);
 
 export default routerCourse;

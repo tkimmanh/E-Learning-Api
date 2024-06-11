@@ -1,3 +1,5 @@
+import { User } from "~/models/users.model";
+
 export const isInstructor = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id).exec();

@@ -45,3 +45,38 @@ export const createCourseService = async (courseData) => {
 
   return newCourse;
 };
+
+export const uploadVideoService = async (videoFile) => {
+  const params = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: `videos/${uuidv4()}-${videoFile.originalname}`,
+    Body: videoFile.buffer,
+    ContentType: videoFile.mimetype,
+    ACL: "public-read",
+  };
+  const uploadResult = await s3.upload(params).promise();
+  return uploadResult.Location;
+};
+
+export const createChapterService = async (courseId, chapterData) => {
+  const course = await Course.findById(courseId);
+  if (!course) {
+    throw new Error("Course not found");
+  }
+  course.chapters.push(chapterData);
+  await course.save();
+  return course;
+};
+
+export const deleteVideoService = async (videoUrl) => {
+  if (!videoUrl) {
+    throw new Error("videoUrl không được để trống");
+  }
+  const key = videoUrl.split(".com/")[1];
+  const params = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: key,
+  };
+
+  await s3.deleteObject(params).promise();
+};

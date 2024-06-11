@@ -1,7 +1,10 @@
 import {
+  createChapterService,
   createCourseService,
   deleteImageCourseService,
+  deleteVideoService,
   uploadImageCourseService,
+  uploadVideoService,
 } from "~/services/couser.service";
 
 export const uploadImageCourseController = async (req, res) => {
@@ -46,6 +49,53 @@ export const createCourseController = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       message: "Create course failed",
+      error: error.message,
+    });
+  }
+};
+
+export const createChapterController = async (req, res) => {
+  try {
+    const { courseId, chapterData } = req.body;
+    const result = await createChapterService(courseId, chapterData);
+    return res.status(201).json({
+      message: "Tạo chương thành công",
+      course: result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Create chapter failed",
+      error: error.message,
+    });
+  }
+};
+
+export const uploadVideoController = async (req, res) => {
+  try {
+    const videoFile = req.file;
+    const result = await uploadVideoService(videoFile);
+    return res.status(200).json({
+      message: "Tải video thành công",
+      result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Upload video failed",
+      error: error.message,
+    });
+  }
+};
+
+export const deleteVideoController = async (req, res) => {
+  try {
+    const { videoUrl } = req.body;
+    await deleteVideoService(videoUrl);
+    return res.status(200).json({
+      message: "Xóa video thành công",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Xóa video thất bại",
       error: error.message,
     });
   }
