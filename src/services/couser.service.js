@@ -1,7 +1,10 @@
+// ** aws
 import AWS from "aws-sdk";
 
-//
+// ** uuid
 import { v4 as uuidv4 } from "uuid";
+
+// ** model
 import { Course } from "~/models/course.model";
 
 const s3 = new AWS.S3({
@@ -79,4 +82,14 @@ export const deleteVideoService = async (videoUrl) => {
   };
 
   await s3.deleteObject(params).promise();
+};
+
+export const listCourseService = async () => {
+  const courses = await Course.find();
+  return courses;
+};
+
+export const getDetailCourseService = async (courseId) => {
+  const course = await Course.findById({ _id: courseId });
+  return course;
 };

@@ -7,6 +7,8 @@ import {
   createCourseController,
   deleteImageCourseController,
   deleteVideoController,
+  getDetailCourseController,
+  listCourseController,
   uploadImageCourseController,
   uploadVideoController,
 } from "~/controllers/course.controllers";
@@ -20,6 +22,9 @@ const routerCourse = Router();
 
 // ** multer
 const upload = multer();
+
+routerCourse.get("/list-course", listCourseController);
+routerCourse.get("/detail-course/:courseId", getDetailCourseController);
 
 routerCourse.post(
   "/upload-image",

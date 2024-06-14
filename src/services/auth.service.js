@@ -3,27 +3,21 @@ import { User } from "~/models/users.model";
 
 // ** utils
 import { comparePassword, hashPassword } from "~/utils/auth";
-// ** aws
-import AWS from "aws-sdk";
 
 // ** jwt
 import jwt from "jsonwebtoken";
 
+// ** aws
+import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+
 // ** config
-const SES = new AWS.SES({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+const sesClient = new SESClient({
   region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
 });
-
-// ** s3 config
-const s3Config = {
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION,
-};
-
-const s3 = new AWS.S3(s3Config);
 
 export const registerService = async ({ name, email, password }) => {
   // validation
@@ -72,18 +66,18 @@ export const forgotPasswordService = async (email, params, short_code) => {
     { password_reset_code: short_code }
   );
 
-  // Xóa mã xác nhận sau 3 phút
   setTimeout(async () => {
     await User.findOneAndUpdate(
       { email, password_reset_code: short_code },
       { password_reset_code: "" }
     );
-  }, 3 * 60 * 1000); // 3 phút
+  }, 3 * 60 * 1000);
 
   if (!user) {
     throw new Error("Người dùng không tồn tại!");
   }
-  return SES.sendEmail(params).promise();
+  const command = new SendEmailCommand(params);
+  return sesClient.send(command);
 };
 
 export const resetPasswordService = async (new_password, shortCode) => {
