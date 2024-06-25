@@ -1,13 +1,16 @@
+import { createPaymentService } from "~/services/cart.service";
 import {
   createChapterService,
   createCourseService,
   deleteImageCourseService,
   deleteVideoService,
   getDetailCourseService,
+  getListCourseByUserService,
+  getPurchasedCourseByIdService,
   listCourseService,
   uploadImageCourseService,
   uploadVideoService,
-} from "~/services/couser.service";
+} from "~/services/course.service";
 
 export const uploadImageCourseController = async (req, res) => {
   try {
@@ -106,6 +109,11 @@ export const deleteVideoController = async (req, res) => {
 export const listCourseController = async (req, res) => {
   try {
     const result = await listCourseService();
+    if (!result) {
+      return res.status(404).json({
+        msg: "Không tồn tại khóa học",
+      });
+    }
     return res.status(200).json({
       msg: "Lấy danh sách khóa học thành công",
       result,
@@ -121,7 +129,11 @@ export const getDetailCourseController = async (req, res) => {
   try {
     const { courseId } = req.params;
     const result = await getDetailCourseService(courseId);
-    console.log(result);
+    if (!result) {
+      return res.status(404).json({
+        msg: "Không tồn tại khóa học",
+      });
+    }
     return res.status(200).json({
       msg: "Lấy chi tiết khóa học thành công",
       result,
@@ -129,6 +141,50 @@ export const getDetailCourseController = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       msg: "Lấy chi tiết khóa học thất bại",
+      error: error.message,
+    });
+  }
+};
+
+export const createPaymentController = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    await createPaymentService(courseId);
+  } catch (error) {
+    return res.status(500).json({
+      msg: "Create payment failed",
+      error: error.message,
+    });
+  }
+};
+
+export const getListCourseByUserController = async (req, res) => {
+  try {
+    const result = await getListCourseByUserService(req.user._id);
+    return res.status(200).json({
+      msg: "Lấy danh sách khóa học thành công",
+      result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      msg: "Lấy danh sách khóa học thất bại",
+      error: error.message,
+    });
+  }
+};
+
+export const getPurchasedCourseByIdController = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const result = await getPurchasedCourseByIdService(req.user._id, courseId);
+
+    return res.status(200).json({
+      msg: "Lấy khóa học đã mua thành công",
+      result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      msg: "Lấy khóa học đã mua thất bại",
       error: error.message,
     });
   }

@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 // ** model
 import { Course } from "~/models/course.model";
+import { User } from "~/models/users.model";
 
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -85,11 +86,32 @@ export const deleteVideoService = async (videoUrl) => {
 };
 
 export const listCourseService = async () => {
-  const courses = await Course.find();
+  const courses = await Course.find({ published: true });
   return courses;
 };
 
 export const getDetailCourseService = async (courseId) => {
   const course = await Course.findById({ _id: courseId });
+  return course;
+};
+
+export const getListCourseByUserService = async (userId) => {
+  const user = await User.findById(userId).populate("courses");
+  return user.courses;
+};
+
+export const getPurchasedCourseByIdService = async (userId, courseId) => {
+  const user = await User.findById(userId).populate("courses");
+
+  if (!user) {
+    throw new Error("Người d không tồn tại");
+  }
+  const course = user.courses.find(
+    (course) => course._id.toString() === courseId
+  );
+
+  if (!course) {
+    throw new Error("Bạn chưa mua khóa học này");
+  }
   return course;
 };

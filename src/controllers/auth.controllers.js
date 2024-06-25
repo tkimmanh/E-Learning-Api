@@ -8,7 +8,6 @@ import {
 } from "~/services/auth.service";
 
 import { v4 as uuidv4 } from "uuid";
-import { comparePassword, hashPassword } from "~/utils/auth";
 
 export const registerController = async (req, res) => {
   try {

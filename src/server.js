@@ -14,9 +14,11 @@ import cookieParser from "cookie-parser";
 import routerAuth from "./routes/auth.routes";
 import routerInstructor from "./routes/instrucor.routes";
 import routerCourse from "./routes/course.routes";
+import routerCart from "./routes/cart.routes";
 
 // ** csrf
 import csrf from "@dr.pogodin/csurf";
+import routerPayment from "./routes/payment.routes";
 
 const app = express();
 
@@ -46,6 +48,8 @@ app.get("/csrf-token", (req, res) => {
 app.use("/auth", routerAuth);
 app.use("/instructor", routerInstructor);
 app.use("/course", routerCourse);
+app.use("/payment", routerPayment);
+app.use("/cart", routerCart);
 
 const hostname = "localhost";
 const port = 8017 || 8619;

@@ -58,6 +58,7 @@ const courseSchema = new mongoose.Schema(
       default: true,
     },
     chapters: [chapterSchema],
+    students: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );

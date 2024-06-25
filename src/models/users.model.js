@@ -19,6 +19,8 @@ const userSchema = mongoose.Schema(
       min: 6,
       max: 64,
     },
+    cart: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
+    courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
     picture: {
       type: String,
       default: "/avatar.png",

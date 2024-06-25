@@ -8,6 +8,8 @@ import {
   deleteImageCourseController,
   deleteVideoController,
   getDetailCourseController,
+  getListCourseByUserController,
+  getPurchasedCourseByIdController,
   listCourseController,
   uploadImageCourseController,
   uploadVideoController,
@@ -47,5 +49,15 @@ routerCourse.post(
   uploadVideoController
 );
 routerCourse.delete("/delete-video", requireSignin, deleteVideoController);
+routerCourse.get(
+  "/list-course-by-user",
+  requireSignin,
+  getListCourseByUserController
+);
+routerCourse.get(
+  "/purchased-course/:courseId",
+  requireSignin,
+  getPurchasedCourseByIdController
+);
 
 export default routerCourse;
