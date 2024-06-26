@@ -104,12 +104,11 @@ export const getPurchasedCourseByIdService = async (userId, courseId) => {
   const user = await User.findById(userId).populate("courses");
 
   if (!user) {
-    throw new Error("Người d không tồn tại");
+    throw new Error("Người dùng không tồn tại");
   }
   const course = user.courses.find(
     (course) => course._id.toString() === courseId
   );
-
   if (!course) {
     throw new Error("Bạn chưa mua khóa học này");
   }

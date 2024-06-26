@@ -27,7 +27,7 @@ const userSchema = mongoose.Schema(
     },
     role: {
       type: [String],
-      default: ["Subscriber"],
+      default: ["Subscriber", "Student"],
       enum: ["Subscriber", "Instructor", "Admin"],
     },
     email_paypal: {

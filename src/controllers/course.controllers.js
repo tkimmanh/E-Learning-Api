@@ -177,15 +177,14 @@ export const getPurchasedCourseByIdController = async (req, res) => {
   try {
     const { courseId } = req.params;
     const result = await getPurchasedCourseByIdService(req.user._id, courseId);
-
+    if (!result) {
+      return res.redirect(process.env.FRONT_END_URL);
+    }
     return res.status(200).json({
       msg: "Lấy khóa học đã mua thành công",
       result,
     });
   } catch (error) {
-    return res.status(500).json({
-      msg: "Lấy khóa học đã mua thất bại",
-      error: error.message,
-    });
+    return res.redirect(process.env.FRONT_END_URL);
   }
 };
