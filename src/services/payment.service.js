@@ -14,38 +14,42 @@ paypal.configure({
 export const createPaymentService = async (courseId) => {
   const course = await Course.findById(courseId);
   if (!course) throw new Error("Course not found");
+
+  const discountedPriceVND = course.discount
+    ? course.price - course.price * (course.discount / 100)
+    : course.price;
+  const discountedPriceUSD = (discountedPriceVND / 23000).toFixed(2); // 23000 là tỉ giá VND sang USD
+
   const items = [
     {
       name: course.name,
       sku: course._id.toString(),
-      price: course.price.toString(),
+      price: discountedPriceUSD,
       currency: "USD",
       quantity: 1,
     },
   ];
 
-  const totalAmount = course.price;
+  const totalAmount = discountedPriceUSD;
 
   const create_payment_json = {
-    intent: "sale", // hành động thanh toán
-    payer: { payment_method: "paypal" }, // phương thức thanh toán
+    intent: "sale",
+    payer: { payment_method: "paypal" },
     redirect_urls: {
-      return_url: "http://localhost:3002/success", // url khi thanh toán thành công
-      cancel_url: "http://localhost:3002/error", // url khi thanh toán thất bại
+      return_url: `${process.env.FRONT_END_URL}/success`,
+      cancel_url: `${process.env.FRONT_END_URL}/error`,
     },
     transactions: [
-      // danh sách giao dịch
       {
-        item_list: { items }, // danh sách mặt hàng
+        item_list: { items },
         amount: {
-          currency: "USD", // mệnh giá
-          total: totalAmount.toString(), // tổng giá
+          currency: "USD",
+          total: totalAmount,
         },
-        description: "Thanh toán khóa học", // mô tả
+        description: "Thanh toán khóa học",
       },
     ],
   };
-
   return new Promise((resolve, reject) => {
     paypal.payment.create(create_payment_json, (error, payment) => {
       if (error) reject(error);

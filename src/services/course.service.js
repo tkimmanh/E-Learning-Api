@@ -114,3 +114,103 @@ export const getPurchasedCourseByIdService = async (userId, courseId) => {
   }
   return course;
 };
+
+export const addFreeCourseService = async (userId, courseId) => {
+  const user = await User.findById(userId);
+  const course = await Course.findById(courseId);
+
+  if (!user) {
+    throw new Error("Người dùng không tồn tại");
+  }
+
+  if (!course) {
+    throw new Error("Khóa học không tồn tại");
+  }
+
+  if (user.courses.includes(courseId)) {
+    throw new Error("Bạn đã đăng ký khóa học này");
+  }
+
+  user.courses.push(courseId);
+
+  await user.save();
+
+  return course;
+};
+
+export const updateCourseService = async (courseId, courseData) => {
+  const updatedCourse = await Course.findByIdAndUpdate(
+    courseId,
+    {
+      $set: {
+        name: courseData.name,
+        description: courseData.description,
+        price: courseData.price,
+        discount: courseData.discount,
+        image: courseData.image,
+        published: courseData.published,
+        paid: courseData.paid,
+        chapters: courseData.chapters,
+      },
+    },
+    { new: true }
+  );
+
+  if (!updatedCourse) {
+    throw new Error("Course not found");
+  }
+
+  return updatedCourse;
+};
+
+export const updateChapterService = async (
+  courseId,
+  chapterId,
+  chapterData
+) => {
+  const course = await Course.findOneAndUpdate(
+    { _id: courseId, "chapters._id": chapterId },
+    {
+      $set: {
+        "chapters.$.title": chapterData.title,
+        "chapters.$.videos": chapterData.videos,
+      },
+    },
+    { new: true }
+  );
+  if (!course) {
+    throw new Error("Course or Chapter not found");
+  }
+  return course;
+};
+
+export const updateVideoService = async (
+  courseId,
+  chapterId,
+  videoId,
+  videoData
+) => {
+  const course = await Course.findOneAndUpdate(
+    {
+      _id: courseId,
+      "chapters._id": chapterId,
+      "chapters.videos._id": videoId,
+    },
+    {
+      $set: {
+        "chapters.$[chapter].videos.$[video].title": videoData.title,
+        "chapters.$[chapter].videos.$[video].url": videoData.url,
+        "chapters.$[chapter].videos.$[video].description":
+          videoData.description,
+      },
+    },
+    {
+      arrayFilters: [{ "chapter._id": chapterId }, { "video._id": videoId }],
+      new: true,
+    }
+  );
+  if (!course) {
+    throw new Error("Course, Chapter, or Video not found");
+  }
+  return course;
+};

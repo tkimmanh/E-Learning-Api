@@ -1,5 +1,6 @@
 import { createPaymentService } from "~/services/cart.service";
 import {
+  addFreeCourseService,
   createChapterService,
   createCourseService,
   deleteImageCourseService,
@@ -8,6 +9,9 @@ import {
   getListCourseByUserService,
   getPurchasedCourseByIdService,
   listCourseService,
+  updateChapterService,
+  updateCourseService,
+  updateVideoService,
   uploadImageCourseService,
   uploadVideoService,
 } from "~/services/course.service";
@@ -186,5 +190,74 @@ export const getPurchasedCourseByIdController = async (req, res) => {
     });
   } catch (error) {
     return res.redirect(process.env.FRONT_END_URL);
+  }
+};
+
+export const addFreeCourseController = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const result = await addFreeCourseService(req.user._id, courseId);
+    return res.status(200).json({
+      msg: "Tham gia khóa học thành công",
+      result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      msg: "Add free course failed",
+      error: error.message,
+    });
+  }
+};
+
+export const updateCourseController = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const courseData = req.body;
+    const result = await updateCourseService(courseId, courseData);
+    return res.status(200).json({
+      msg: "Update course success",
+      result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      msg: error.message,
+    });
+  }
+};
+
+export const updateChapterController = async (req, res) => {
+  try {
+    const { courseId, chapterId } = req.params;
+    const chapterData = req.body;
+    const result = await updateChapterService(courseId, chapterId, chapterData);
+    return res.status(200).json({
+      msg: "Update chapter success",
+      result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      msg: error.message,
+    });
+  }
+};
+
+export const updateVideoController = async (req, res) => {
+  try {
+    const { courseId, chapterId, videoId } = req.params;
+    const { videoData } = req.body;
+    const result = await updateVideoService(
+      courseId,
+      chapterId,
+      videoId,
+      videoData
+    );
+    return res.status(200).json({
+      msg: "Update video success",
+      result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      msg: error.message,
+    });
   }
 };

@@ -8,6 +8,7 @@ export const createPaymentController = async (req, res) => {
     const payment = await createPaymentService(req.params.courseId);
     return res.status(200).json(payment);
   } catch (error) {
+    console.log("error", error);
     return res.status(500).json({ msg: error.message });
   }
 };

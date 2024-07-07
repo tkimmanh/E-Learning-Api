@@ -13,6 +13,10 @@ import {
   listCourseController,
   uploadImageCourseController,
   uploadVideoController,
+  addFreeCourseController,
+  updateCourseController,
+  updateChapterController,
+  updateVideoController,
 } from "~/controllers/course.controllers";
 
 // ** middleware
@@ -58,6 +62,28 @@ routerCourse.get(
   "/purchased-course/:courseId",
   requireSignin,
   getPurchasedCourseByIdController
+);
+
+routerCourse.post(
+  "/add-free-course/:courseId",
+  requireSignin,
+  addFreeCourseController
+);
+routerCourse.put(
+  "/edit-course/:courseId",
+  requireSignin,
+  updateCourseController
+);
+routerCourse.put(
+  "/edit-course/:courseId/chapter/:chapterId",
+  requireSignin,
+
+  updateChapterController
+);
+routerCourse.put(
+  "/edit-course/:courseId/chapter/:chapterId/video/:videoId",
+  requireSignin,
+  updateVideoController
 );
 
 export default routerCourse;

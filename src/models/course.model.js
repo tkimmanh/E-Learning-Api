@@ -10,6 +10,9 @@ const videoSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    description: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
@@ -46,6 +49,10 @@ const courseSchema = new mongoose.Schema(
     price: {
       type: Number,
       default: 9.99,
+    },
+    discount: {
+      type: Number,
+      default: 0,
     },
     image: {},
     category: String,
